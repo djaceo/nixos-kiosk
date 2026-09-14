@@ -40,6 +40,25 @@
     chromium
   ];
 
+  environment.etc."kiosk/start-browser.sh" = {
+    source = ./start-browser.sh;
+    mode = "0755";
+  };
+
+  systemd.user.services.chromium-kiosk = {
+    description = "Start Chromium kiosk browser";
+
+    wantedBy = [ "graphical-session.target" ];
+
+    after = [ "graphical-session.target" ];
+
+    serviceConfig = {
+      ExecStart = "/etc/kiosk/start-browser.sh";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+  };
+
   isoImage.makeEfiBootable = true;
   isoImage.makeUsbBootable = true;
 }
