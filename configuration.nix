@@ -27,7 +27,14 @@
     initialPassword = "test";
   };
 
-  programs.chromium.enable = true;
+  programs.chromium = {
+    enable = true;
+
+    extraOpts = {
+      DownloadRestrictions = 3;
+      PrintingEnabled = false;
+    };
+  };
 
   environment.systemPackages = with pkgs; [
     chromium
