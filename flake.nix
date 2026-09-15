@@ -1,4 +1,3 @@
-
 {
   description = "NixOS 26.05 public kiosk";
 
@@ -8,13 +7,32 @@
 
   outputs = { self, nixpkgs }:
     {
+      # --------------------------------------------------------
+      # Späteres SSD-System
+      # --------------------------------------------------------
+
       nixosConfigurations.kiosk =
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          modules = [
+            ./configuration.nix
+          ];
+        };
+
+
+      # --------------------------------------------------------
+      # Live-/Installations-ISO
+      # --------------------------------------------------------
+
+      nixosConfigurations.kiosk-iso =
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
           modules = [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
             ./configuration.nix
+            ./iso.nix
           ];
         };
     };

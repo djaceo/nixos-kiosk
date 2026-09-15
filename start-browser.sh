@@ -9,6 +9,8 @@ while true; do
     --incognito \
     --start-fullscreen \
     --lang=de-DE \
+    --no-first-run \
+    --no-default-browser-check \
     https://www.google.de
 
   sleep 1

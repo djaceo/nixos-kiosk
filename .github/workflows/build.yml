@@ -23,7 +23,7 @@ jobs:
 
       - name: Build ISO
         run: |
-          nix build .#nixosConfigurations.kiosk.config.system.build.isoImage
+          nix build .#nixosConfigurations.kiosk-iso.config.system.build.isoImage
 
       - name: Upload ISO
         uses: actions/upload-artifact@v4
