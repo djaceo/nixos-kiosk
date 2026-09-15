@@ -7,21 +7,10 @@
 
   networking.networkmanager.enable = true;
 
-  services.xserver.enable = true;
-
-  services.xserver.desktopManager.xfce.enable = true;
-
-  services.xserver.displayManager.lightdm.enable = true;
-
-  services.displayManager.defaultSession = "xfce";
-
-  services.xserver.xkb.layout = "de";
-
   users.users.kiosk = {
     isNormalUser = true;
-    description = "Kiosk Test User";
+    description = "Kiosk User";
     extraGroups = [
-      "wheel"
       "networkmanager"
     ];
     initialPassword = "test";
@@ -38,25 +27,14 @@
 
   environment.systemPackages = with pkgs; [
     chromium
+    cage
   ];
 
-  environment.etc."kiosk/start-browser.sh" = {
-    source = ./start-browser.sh;
-    mode = "0755";
-  };
+  services.cage = {
+    enable = true;
+    user = "kiosk";
 
-  systemd.user.services.chromium-kiosk = {
-    description = "Start Chromium kiosk browser";
-
-    wantedBy = [ "graphical-session.target" ];
-
-    after = [ "graphical-session.target" ];
-
-    serviceConfig = {
-      ExecStart = "/etc/kiosk/start-browser.sh";
-      Restart = "on-failure";
-      RestartSec = 2;
-    };
+    program = "${pkgs.chromium}/bin/chromium --kiosk --incognito --start-fullscreen https://www.google.de";
   };
 
   isoImage.makeEfiBootable = true;
