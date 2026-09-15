@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-exec chromium \
-  --incognito \
-  --start-maximized \
-  https://www.google.de
+while true; do
+  chromium \
+    --kiosk \
+    --incognito \
+    --start-fullscreen \
+    https://www.google.de
+
+  sleep 1
+done

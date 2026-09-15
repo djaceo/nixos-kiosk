@@ -30,11 +30,16 @@
     cage
   ];
 
+  environment.etc."kiosk/start-browser.sh" = {
+    source = ./start-browser.sh;
+    mode = "0755";
+  };
+
   services.cage = {
     enable = true;
     user = "kiosk";
 
-    program = "${pkgs.chromium}/bin/chromium --kiosk --incognito --start-fullscreen https://www.google.de";
+    program = "/etc/kiosk/start-browser.sh";
   };
 
   isoImage.makeEfiBootable = true;
