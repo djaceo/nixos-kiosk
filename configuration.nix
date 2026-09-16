@@ -1,10 +1,11 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   system.stateVersion = "26.05";
 
   networking.hostName = "nixos-kiosk";
   networking.networkmanager.enable = true;
+
 
   # ------------------------------------------------------------
   # Sprache / Tastatur
@@ -16,7 +17,7 @@
 
 
   # ------------------------------------------------------------
-  # Benutzer
+  # Kiosk-Benutzer
   # ------------------------------------------------------------
 
   users.users.kiosk = {
@@ -30,8 +31,11 @@
     initialPassword = "test";
   };
 
-  # Wartungsbenutzer:
-  # erreichbar über Ctrl+Alt+F3
+
+  # ------------------------------------------------------------
+  # Wartungsbenutzer
+  # ------------------------------------------------------------
+
   users.users.maintenance = {
     isNormalUser = true;
     description = "Wartung";
@@ -46,7 +50,7 @@
 
 
   # ------------------------------------------------------------
-  # Chromium
+  # Chromium Enterprise Policies
   # ------------------------------------------------------------
 
   programs.chromium = {
@@ -54,99 +58,49 @@
 
     extraOpts = {
 
-      # --------------------------------------------------------
-      # Downloads vollständig sperren
-      # --------------------------------------------------------
-
+      # Downloads komplett verbieten
       DownloadRestrictions = 3;
 
-
-      # --------------------------------------------------------
-      # Datei öffnen / hochladen / speichern verhindern
-      # --------------------------------------------------------
-
+      # Datei-Auswahldialoge deaktivieren
       AllowFileSelectionDialogs = false;
 
-
-      # --------------------------------------------------------
-      # Drucken sperren
-      # --------------------------------------------------------
-
+      # Drucken deaktivieren
       PrintingEnabled = false;
 
-
-      # --------------------------------------------------------
-      # Passwortmanager sperren
-      # --------------------------------------------------------
-
+      # Passwortmanager deaktivieren
       PasswordManagerEnabled = false;
       PasswordManagerAllowShowPasswords = false;
 
-
-      # --------------------------------------------------------
-      # Autofill sperren
-      # --------------------------------------------------------
-
+      # Autofill deaktivieren
       AutoFillEnabled = false;
 
-
-      # --------------------------------------------------------
-      # Erweiterungen sperren
-      # --------------------------------------------------------
-
+      # Erweiterungen blockieren
       ExtensionInstallBlocklist = [
         "*"
       ];
 
-
-      # --------------------------------------------------------
-      # Entwicklertools sperren
-      # --------------------------------------------------------
-
+      # Entwicklertools deaktivieren
       DeveloperToolsAvailability = 2;
 
-
-      # --------------------------------------------------------
-      # Keine zusätzlichen Browserprofile
-      # --------------------------------------------------------
-
+      # Keine zusätzlichen Profile
       BrowserAddPersonEnabled = false;
+
+      # Gastmodus deaktivieren
       BrowserGuestModeEnabled = false;
 
-
-      # --------------------------------------------------------
-      # Ausschließlich Inkognito
-      # --------------------------------------------------------
-
+      # Nur Inkognito
       IncognitoModeAvailability = 2;
 
-
-      # --------------------------------------------------------
-      # Cast / Streamen deaktivieren
-      # --------------------------------------------------------
-
+      # Google Cast / Streamen deaktivieren
       EnableMediaRouter = false;
 
-
-      # --------------------------------------------------------
-      # "Speichern und teilen" / Sharing Hub deaktivieren
-      # --------------------------------------------------------
-
+      # Sharing Hub deaktivieren
       DesktopSharingHubEnabled = false;
 
-
-      # --------------------------------------------------------
-      # Browserdaten nicht dauerhaft behalten
-      # Zusätzliche Absicherung neben Inkognito
-      # --------------------------------------------------------
-
+      # Browser-Historie nicht speichern
       SavingBrowserHistoryDisabled = true;
 
-
-      # --------------------------------------------------------
-      # Interne Chromium-Seiten sperren
-      # --------------------------------------------------------
-
+      # Interne Verwaltungs-/Funktionsseiten blockieren
       URLBlocklist = [
         "chrome://settings/*"
         "chrome://downloads/*"
@@ -168,7 +122,7 @@
 
 
   # ------------------------------------------------------------
-  # Installierte Pakete
+  # Pakete
   # ------------------------------------------------------------
 
   environment.systemPackages = with pkgs; [
@@ -188,7 +142,7 @@
 
 
   # ------------------------------------------------------------
-  # Cage Kiosk
+  # Cage
   # ------------------------------------------------------------
 
   services.cage = {
@@ -197,7 +151,7 @@
     user = "kiosk";
 
     # VT-Wechsel erlauben:
-    # Ctrl+Alt+F2/F3/...
+    # Ctrl+Alt+F2 / F3 / ...
     extraArguments = [
       "-s"
     ];
@@ -208,7 +162,15 @@
 
   # ------------------------------------------------------------
   # Wartungs-TTY
+  #
+  # Wichtig:
+  # Die Installations-ISO aktiviert normalerweise automatisch
+  # den Benutzer "nixos" auf den virtuellen Konsolen.
+  #
+  # Das wird hier explizit abgeschaltet.
   # ------------------------------------------------------------
+
+  services.getty.autologinUser = lib.mkForce null;
 
   systemd.services."getty@tty3".enable = true;
 }
