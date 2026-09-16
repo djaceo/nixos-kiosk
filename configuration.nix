@@ -140,6 +140,30 @@
     mode = "0755";
   };
 
+  # ------------------------------------------------------------
+  # Eigene Navigationsleiste
+  # ------------------------------------------------------------
+
+  environment.etc."kiosk/navigation/manifest.json".text = ''
+    {
+      "manifest_version": 3,
+      "name": "Kiosk Navigation",
+      "version": "1.0",
+      "description": "Navigation für den öffentlichen Kiosk",
+      "content_scripts": [
+        {
+          "matches": ["<all_urls>"],
+          "js": ["navigation.js"],
+          "run_at": "document_idle"
+        }
+      ]
+    }
+  '';
+
+  environment.etc."kiosk/navigation/navigation.js" = {
+    source = ./navigation.js;
+    mode = "0644";
+  };
 
   # ------------------------------------------------------------
   # Cage

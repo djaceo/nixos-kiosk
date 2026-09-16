@@ -6,12 +6,13 @@ export LANGUAGE=de_DE:de
 while true; do
   chromium \
     --kiosk \
-    --app=https://www.google.de \
     --incognito \
     --start-fullscreen \
     --lang=de-DE \
     --no-first-run \
-    --no-default-browser-check
+    --no-default-browser-check \
+    --load-extension=/etc/kiosk/navigation \
+    https://www.google.de
 
   sleep 1
 done
