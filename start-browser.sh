@@ -11,7 +11,6 @@ while true; do
     --lang=de-DE \
     --no-first-run \
     --no-default-browser-check \
-    --load-extension=/etc/kiosk/navigation \
     https://www.google.de
 
   sleep 1

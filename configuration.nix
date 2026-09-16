@@ -6,7 +6,6 @@
   networking.hostName = "nixos-kiosk";
   networking.networkmanager.enable = true;
 
-
   # ------------------------------------------------------------
   # Sprache / Tastatur
   # ------------------------------------------------------------
@@ -50,7 +49,7 @@
 
 
   # ------------------------------------------------------------
-  # Chromium Enterprise Policies
+  # Chromium
   # ------------------------------------------------------------
 
   programs.chromium = {
@@ -58,7 +57,7 @@
 
     extraOpts = {
 
-      # Downloads komplett verbieten
+      # Downloads vollständig sperren
       DownloadRestrictions = 3;
 
       # Datei-Auswahldialoge deaktivieren
@@ -74,7 +73,7 @@
       # Autofill deaktivieren
       AutoFillEnabled = false;
 
-      # Erweiterungen blockieren
+      # Erweiterungen vollständig blockieren
       ExtensionInstallBlocklist = [
         "*"
       ];
@@ -82,13 +81,13 @@
       # Entwicklertools deaktivieren
       DeveloperToolsAvailability = 2;
 
-      # Keine zusätzlichen Profile
+      # Keine zusätzlichen Browserprofile
       BrowserAddPersonEnabled = false;
 
       # Gastmodus deaktivieren
       BrowserGuestModeEnabled = false;
 
-      # Nur Inkognito
+      # Ausschließlich Inkognito
       IncognitoModeAvailability = 2;
 
       # Google Cast / Streamen deaktivieren
@@ -100,7 +99,7 @@
       # Browser-Historie nicht speichern
       SavingBrowserHistoryDisabled = true;
 
-      # Interne Verwaltungs-/Funktionsseiten blockieren
+      # Interne Chromium-Seiten blockieren
       URLBlocklist = [
         "chrome://settings/*"
         "chrome://downloads/*"
@@ -140,33 +139,9 @@
     mode = "0755";
   };
 
-  # ------------------------------------------------------------
-  # Eigene Navigationsleiste
-  # ------------------------------------------------------------
-
-  environment.etc."kiosk/navigation/manifest.json".text = ''
-    {
-      "manifest_version": 3,
-      "name": "Kiosk Navigation",
-      "version": "1.0",
-      "description": "Navigation für den öffentlichen Kiosk",
-      "content_scripts": [
-        {
-          "matches": ["<all_urls>"],
-          "js": ["navigation.js"],
-          "run_at": "document_idle"
-        }
-      ]
-    }
-  '';
-
-  environment.etc."kiosk/navigation/navigation.js" = {
-    source = ./navigation.js;
-    mode = "0644";
-  };
 
   # ------------------------------------------------------------
-  # Cage
+  # Cage Kiosk
   # ------------------------------------------------------------
 
   services.cage = {
@@ -174,7 +149,7 @@
 
     user = "kiosk";
 
-    # VT-Wechsel erlauben:
+    # VT-Wechsel erlauben
     # Ctrl+Alt+F2 / F3 / ...
     extraArguments = [
       "-s"
@@ -187,11 +162,8 @@
   # ------------------------------------------------------------
   # Wartungs-TTY
   #
-  # Wichtig:
-  # Die Installations-ISO aktiviert normalerweise automatisch
-  # den Benutzer "nixos" auf den virtuellen Konsolen.
-  #
-  # Das wird hier explizit abgeschaltet.
+  # Kein automatischer Login auf tty3.
+  # Ctrl+Alt+F3 muss einen Login verlangen.
   # ------------------------------------------------------------
 
   services.getty.autologinUser = lib.mkForce null;
