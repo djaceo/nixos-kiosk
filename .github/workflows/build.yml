@@ -23,7 +23,7 @@ jobs:
 
       - name: Build disk image
         run: |
-          nixos-rebuild build-image \
+          nix run nixpkgs#nixos-rebuild -- build-image \
             --flake .#kiosk \
             --image-variant raw-efi
 
@@ -36,4 +36,3 @@ jobs:
         with:
           name: nixos-kiosk-disk-image
           path: result/**
-
