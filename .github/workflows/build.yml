@@ -1,4 +1,4 @@
-name: Build NixOS ISO
+name: Build NixOS disk image
 
 on:
   push:
@@ -21,12 +21,16 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Build ISO
+      - name: Build raw EFI disk image
         run: |
-          nix build .#nixosConfigurations.kiosk-iso.config.system.build.isoImage
+          nix build .#nixosConfigurations.kiosk.config.system.build.raw-efi
 
-      - name: Upload ISO
+      - name: Show result
+        run: |
+          ls -lh result/
+
+      - name: Upload disk image
         uses: actions/upload-artifact@v4
         with:
-          name: nixos-kiosk-x86_64
-          path: result/iso/*.iso
+          name: nixos-kiosk-disk-image
+          path: result/*
