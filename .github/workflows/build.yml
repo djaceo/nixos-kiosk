@@ -21,16 +21,19 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Build raw EFI disk image
+      - name: Build disk image
         run: |
-          nix build .#nixosConfigurations.kiosk.config.system.build.raw-efi
+          nixos-rebuild build-image \
+            --flake .#kiosk \
+            --image-variant raw-efi
 
-      - name: Show result
+      - name: Show image
         run: |
-          ls -lh result/
+          find result -maxdepth 2 -type f -ls
 
-      - name: Upload disk image
+      - name: Upload image
         uses: actions/upload-artifact@v4
         with:
           name: nixos-kiosk-disk-image
-          path: result/*
+          path: result/**
+
